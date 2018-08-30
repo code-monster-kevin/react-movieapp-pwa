@@ -15,9 +15,11 @@ REACT_APP_API_KEY=`[themoviedb API key]`
 
 ## Setup AntDesign
 - [Install Antd and required packages]
-> npm i antd
-> npm i -D react-app-rewired
-> npm i -D babel-plugin-import
+```sh
+npm i antd
+npm i -D react-app-rewired
+npm i -D babel-plugin-import
+```
 
 - [Update Package.json to use react-app-rewired]
 ```diff
