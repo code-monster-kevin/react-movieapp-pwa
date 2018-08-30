@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import './App.css';
-import Movie from './Movie/Movie';
+import { Layout, Menu, Icon, Pagination, Card } from 'antd';
 import { getDiscoverMovies } from './Services/DiscoverMovies';
-import MovieSortBy from './Movie/MovieSortBy';
-import MovieForm from './Movie/MovieForm';
 import ImageMissing from './static/image-missing.png';
+import MovieAppLogo from './static/mva_96x96.png';
+
+const { Header, Content } = Layout;
+const { Meta } = Card;
 
 class App extends Component {
   state = {
@@ -12,25 +13,6 @@ class App extends Component {
     sortby: 'popularity.desc',
     page: '1',
     loadingMovies: false
-  };
-
-  handleAddMovie = (title, description, image) => {
-    const movies = [...this.state.movies];
-    movies.push({ 
-        id: title,
-        title: title,
-        original_title: description,
-        poster_path: image
-    });
-    this.setState({ movies });
-  };
-
-  handleSortChanged = event => {
-    this.setState({ sortby: event.target.value });
-  };
-
-  handlePageChange = event => {
-    this.setState({ page: event.target.value });
   };
 
   loadMovies = () => {
@@ -44,59 +26,61 @@ class App extends Component {
     });
   };
 
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
+  }
+
   componentDidMount() {
     this.loadMovies();
   }
 
   render() {
-    const btnStyle = {
-      backgroundColor: '#ccf',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px'
-    };
-
     return (
-      <div className="App">
-        <MovieForm handleAddMovie={this.handleAddMovie} />
-        <br /><br />
-        <MovieSortBy
-          sortby={this.state.sortby}
-          handleSortChanged={this.handleSortChanged}
-        />
-        <span>
-          Page:{' '}
-          <input
-            type="number"
-            value={this.state.page}
-            min="1"
-            max="50"
-            onChange={this.handlePageChange}
-          />
-        </span>
-        <button style={btnStyle} onClick={this.loadMovies}>
-          Update State
-        </button>
-        <br /><br />
-
-        {this.state.loadingMovies ? <h3>Loading... please wait</h3> : null}
-
-        {this.state.movies.map((item, index) => (
-          <Movie
-            key={item.id}
-            title={item.title}
-            description={item.original_title}
+      <Layout>
+        <Header style={{ backgroundColor: '#fff', height:'96px', position: 'fixed', zIndex: 1, width: '100%' }}>
+          <a href="/">
+            <img style={{ float: "left" }} src={MovieAppLogo} alt="Movie App Logo" />
+          </a>
+          <Menu
+            theme="light"
+            mode="horizontal"
+            style={{ lineHeight: '96px' }}
           >
-            <img
-              src={`http://image.tmdb.org/t/p/original${item.poster_path}`}
-              alt={item.title}
-              onError={e => {
-                e.target.src = `${ImageMissing}`;
-              }}
-            />
-          </Movie>
+            <Menu.SubMenu title={<span><Icon type="setting" />Sort By</span>}>
+              <Menu.Item key=''>Popularity Ascending</Menu.Item>
+              <Menu.Item key=''>Popularity Descending</Menu.Item>
+              <Menu.Item key=''>Release Date Ascending</Menu.Item>
+              <Menu.Item key=''>Release Date Descending</Menu.Item>
+              <Menu.Item key=''>Title Ascending</Menu.Item>
+              <Menu.Item key=''>Title Descending</Menu.Item>
+            </Menu.SubMenu>
+          </Menu>
+        </Header>
+        <Content style={{ padding: '0 50px', marginTop: 96 }}>
+          <Pagination showSizeChanger onShowSizeChange={this.onShowSizeChange} defaultCurrent={1} total={50} />
+          {this.state.loadingMovies ? <h3>Loading... please wait</h3> : null}
+          {this.state.movies.map((item, index) => (
+            <Card
+              hoverable
+              style={{ width: 240 }}
+              cover={
+                <img 
+                  alt={item.title} 
+                  src={`http://image.tmdb.org/t/p/original${item.poster_path}`} 
+                  onError={e => {
+                    e.target.src = `${ImageMissing}`;
+                  }} 
+                />
+              }
+            >
+              <Meta
+                title={item.title}
+                description={item.original_title}
+              />
+            </Card>
         ))}
-      </div>
+        </Content>
+      </Layout>
     );
   }
 }
