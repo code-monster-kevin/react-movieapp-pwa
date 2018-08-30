@@ -7,11 +7,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Setup Environment File
  - [Add .env file to root folder]
  in the `.env` file add the following lines
-
+```sh
 PORT=3000
 HTTPS=true
 REACT_APP_API_URL=https://api.themoviedb.org/3
 REACT_APP_API_KEY=`[themoviedb API key]`
+```
 
 ## Setup AntDesign
 - [Install Antd and required packages]
